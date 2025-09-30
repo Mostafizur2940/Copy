@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Copy Tools - GitHub Optimized</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: #f6f8fa;
+            color: #24292f;
+            line-height: 1.5;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* GitHub-like header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #d0d7de;
+        }
+
+        .header h1 {
+            color: #0969da;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #656d76;
+            font-size: 1.1rem;
+        }
+
+        /* GitHub-like card sections */
+        .section {
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #24292f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 1.25rem;
+            background: #0969da;
+            border-radius: 2px;
+        }
+
+        /* Input groups */
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: #24292f;
+        }
+
+        .clear-btn {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            color: #24292f;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #eaeef2;
+        }
+
+        .input-box {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+            background: #f6f8fa;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: #0969da;
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+        }
+
+        .input-box:disabled {
+            background: #f6f8fa;
+            color: #8c959f;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #0969da;
+            border-color: #0969da;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0550ae;
+            border-color: #0550ae;
+        }
+
+        .btn-secondary {
+            background: #f6f8fa;
+            border-color: #d0d7de;
+            color: #24292f;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #eaeef2;
+        }
+
+        .btn-danger {
+            background: #da3633;
+            border-color: #da3633;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #b02a28;
+            border-color: #b02a28;
+        }
+
+        .btn-success {
+            background: #1a7f37;
+            border-color: #1a7f37;
+            color: #ffffff;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #136325;
+            border-color: #136325;
+        }
+
+        /* Copy section layout */
+        .copy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .counter {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #656d76;
+        }
+
+        /* Control section */
+        .control-section {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .control-section .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            left: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #1a7f37;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.error {
+            background: #da3633;
+        }
+
+        .notification.warning {
+            background: #bf8700;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            .copy-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-section {
+                flex-direction: column;
+            }
+            
+            .control-section .btn {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .input-box {
+                min-height: 100px;
+            }
+        }
+
+        /* GitHub-like code block styling */
+        .code-block {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.875rem;
+            color: #24292f;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #d0d7de;
+            color: #656d76;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 Easy Copy Tools</h1>
+        <p>Efficient text copying from multiple inputs - GitHub Optimized</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Import Data</div>
+        <div class="input-group">
+            <div class="input-header">
+                <label class="input-label">Number</label>
+                <button class="clear-btn" onclick="clearInput('text1')">Clear</button>
+            </div>
+            <textarea id="text1" class="input-box" placeholder="Enter numbers here..."></textarea>
+        </div>
+        <div class="input-group">
+            <div class="input-header">
+                <label class="input-label">Name</label>
+                <button class="clear-btn" onclick="clearInput('text2')">Clear</button>
+            </div>
+            <textarea id="text2" class="input-box" placeholder="Enter names here..."></textarea>
+        </div>
+        <div class="input-group">
+            <div class="input-header">
+                <label class="input-label">Email</label>
+                <button class="clear-btn" onclick="clearInput('text3')">Clear</button>
+            </div>
+            <textarea id="text3" class="input-box" placeholder="Enter emails here..."></textarea>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Copy Operations</div>
+        <div class="copy-grid">
+            <button class="btn btn-primary" id="copyBtn1" onclick="copyText('text1')">
+                <span>📋</span> Copy Number
+            </button>
+            <button class="btn btn-primary" id="copyBtn2" onclick="copyText('text2')">
+                <span>📋</span> Copy Name
+            </button>
+            <button class="btn btn-primary" id="copyBtn3" onclick="copyText('text3')">
+                <span>📋</span> Copy Email
+            </button>
+            <button class="btn btn-secondary" id="copyAllBtn" onclick="copyAll()">
+                <span>📑</span> Copy All
+            </button>
+        </div>
+
+        <div class="counter-grid">
+            <div class="counter" id="counter1">Items: 0</div>
+            <div class="counter" id="counter2">Items: 0</div>
+            <div class="counter" id="counter3">Items: 0</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Controls</div>
+        <div class="control-section">
+            <button class="btn btn-success" onclick="resetAll()">
+                <span>🔄</span> Reset All
+            </button>
+            <button class="btn btn-danger" id="lockBtn" onclick="toggleLock()">
+                <span id="lockIcon">🔒</span>
+                <span id="lockText">Lock & Enable Copy</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <span>✅</span>
+        <span id="notificationText">Text copied to clipboard!</span>
+    </div>
+
+    <div class="code-block">
+        <code>// Easy Copy Tools - GitHub Optimized
+// Features: Lock/Unlock system, Mobile-friendly, Clean UI
+// Usage: Enter text in fields, lock inputs, then copy items</code>
+    </div>
+
+    <div class="footer">
+        <p>Made with ❤️ for GitHub | Easy Copy Tools v2.0</p>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            initialValues: {
+                text1: "1234567890\n0987654321\n5551234567",
+                text2: "John Smith\nJane Doe\nMike Johnson",
+                text3: "john@example.com\njane@test.com\nmike@sample.com"
+            },
+            notificationDuration: 3000
+        };
+
+        // State management
+        let state = {
+            isLocked: false,
+            initialized: false
+        };
+
+        // Initialize application
+        function init() {
+            if (state.initialized) return;
+            
+            // Set initial values
+            Object.keys(CONFIG.initialValues).forEach(id => {
+                document.getElementById(id).value = CONFIG.initialValues[id];
+            });
+            
+            updateAllCounters();
+            updateCopyButtonsState();
+            state.initialized = true;
+        }
+
+        // Copy text from specified input
+        function copyText(textId) {
+            if (!state.isLocked) {
+                showNotification('Please lock inputs to enable copying', 'error');
+                return;
+            }
+
+            const textarea = document.getElementById(textId);
+            const lines = getNonEmptyLines(textarea.value);
+            
+            if (lines.length === 0) {
+                showNotification('No text to copy!', 'error');
+                return;
+            }
+
+            const textToCopy = lines[0].trim();
+            
+            writeToClipboard(textToCopy).then(() => {
+                showNotification(`Copied: ${truncateText(textToCopy, 25)}`);
+                removeFirstLine(textarea);
+                updateCounter(textId);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showNotification('Failed to copy text', 'error');
+            });
+        }
+
+        // Copy one item from each input
+        function copyAll() {
+            if (!state.isLocked) {
+                showNotification('Please lock inputs to enable copying', 'error');
+                return;
+            }
+
+            const textareas = ['text1', 'text2', 'text3'];
+            const copiedItems = [];
+            let hasContent = false;
+
+            textareas.forEach(textId => {
+                const textarea = document.getElementById(textId);
+                const lines = getNonEmptyLines(textarea.value);
+                
+                if (lines.length > 0) {
+                    hasContent = true;
+                    const textToCopy = lines[0].trim();
+                    copiedItems.push(textToCopy);
+                    removeFirstLine(textarea);
+                    updateCounter(textId);
+                }
+            });
+
+            if (!hasContent) {
+                showNotification('No text to copy!', 'error');
+                return;
+            }
+
+            const combinedText = copiedItems.join(' | ');
+            writeToClipboard(combinedText).then(() => {
+                showNotification('Copied all items successfully');
+            }).catch(err => {
+                console.error('Copy all failed:', err);
+                showNotification('Failed to copy items', 'error');
+            });
+        }
+
+        // Utility functions
+        function getNonEmptyLines(text) {
+            return text.split('\n').filter(line => line.trim() !== '');
+        }
+
+        function removeFirstLine(textarea) {
+            const lines = getNonEmptyLines(textarea.value);
+            textarea.value = lines.slice(1).join('\n');
+        }
+
+        function truncateText(text, maxLength) {
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        // Clipboard handling
+        function writeToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(text);
+            } else {
+                // Fallback for older browsers
+                return new Promise((resolve, reject) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.opacity = '0';
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        if (successful) {
+                            resolve();
+                        } else {
+                            reject(new Error('Copy command failed'));
+                        }
+                    } catch (err) {
+                        document.body.removeChild(textArea);
+                        reject(err);
+                    }
+                });
+            }
+        }
+
+        // UI update functions
+        function updateCounter(textId) {
+            const counterId = `counter${textId.replace('text', '')}`;
+            const textarea = document.getElementById(textId);
+            const lines = getNonEmptyLines(textarea.value);
+            document.getElementById(counterId).textContent = `Items: ${lines.length}`;
+        }
+
+        function updateAllCounters() {
+            ['text1', 'text2', 'text3'].forEach(updateCounter);
+        }
+
+        function updateCopyButtonsState() {
+            const copyButtons = ['copyBtn1', 'copyBtn2', 'copyBtn3', 'copyAllBtn'];
+            copyButtons.forEach(btnId => {
+                document.getElementById(btnId).disabled = !state.isLocked;
+            });
+        }
+
+        // Control functions
+        function clearInput(textId) {
+            document.getElementById(textId).value = '';
+            updateCounter(textId);
+            showNotification('Input cleared');
+        }
+
+        function resetAll() {
+            Object.keys(CONFIG.initialValues).forEach(id => {
+                document.getElementById(id).value = CONFIG.initialValues[id];
+            });
+            updateAllCounters();
+            showNotification('All inputs reset to default');
+        }
+
+        function toggleLock() {
+            state.isLocked = !state.isLocked;
+            const lockBtn = document.getElementById('lockBtn');
+            const lockIcon = document.getElementById('lockIcon');
+            const lockText = document.getElementById('lockText');
+            const textareas = document.querySelectorAll('.input-box');
+
+            if (state.isLocked) {
+                // Locked state
+                textareas.forEach(ta => ta.disabled = true);
+                lockIcon.textContent = '🔓';
+                lockText.textContent = 'Unlock & Disable Copy';
+                lockBtn.classList.remove('btn-danger');
+                lockBtn.classList.add('btn-success');
+                showNotification('Inputs locked! Copy functions enabled.', 'warning');
+            } else {
+                // Unlocked state
+                textareas.forEach(ta => ta.disabled = false);
+                lockIcon.textContent = '🔒';
+                lockText.textContent = 'Lock & Enable Copy';
+                lockBtn.classList.remove('btn-success');
+                lockBtn.classList.add('btn-danger');
+                showNotification('Inputs unlocked! Copy functions disabled.');
+            }
+            
+            updateCopyButtonsState();
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            
+            // Set type-specific styling
+            if (type === 'error') {
+                notification.classList.add('error');
+                notification.querySelector('span').textContent = '❌';
+            } else if (type === 'warning') {
+                notification.classList.add('warning');
+                notification.querySelector('span').textContent = '⚠️';
+            } else {
+                notification.querySelector('span').textContent = '✅';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, CONFIG.notificationDuration);
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', init);
+
+        document.querySelectorAll('.input-box').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                updateCounter(this.id);
+            });
+        });
+
+        // GitHub-style error boundary
+        window.addEventListener('error', function(e) {
+            console.error('Application error:', e.error);
+            showNotification('An unexpected error occurred', 'error');
+        });
+    </script>
+</body>
+</html>
