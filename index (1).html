@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>EASY COPY TOOLS · Serial Copy System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c15 0%, #0d111a 100%);
+            font-family: 'Inter', sans-serif;
+            color: #edf2ff;
+            min-height: 100vh;
+            padding: 20px 16px 40px;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(10, 14, 23, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 24px 20px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .brand h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a0c0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .badge-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            margin-top: 8px;
+            color: #8e9bbe;
+        }
+
+        /* Lock Panel - Top Buttons */
+        .lock-bar {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 20px 0 20px;
+            flex-wrap: wrap;
+        }
+        .btn-lock, .btn-unlock {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            background: #11161f;
+            color: #e0edff;
+            border: 1px solid #2a3348;
+        }
+        .btn-lock { border-color: #4c9aff; }
+        .btn-unlock { border-color: #5f7fbf; }
+        .btn-lock:hover, .btn-unlock:hover {
+            transform: translateY(-2px);
+            background: #1a2538;
+        }
+
+        /* Quick Copy Section - Top Buttons like old code */
+        .quick-panel {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 1.5rem;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(76, 154, 255, 0.15);
+        }
+        .quick-title {
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            color: #a5bbeb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quick-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .copy-chip {
+            background: #111927dd;
+            border: 1px solid #3c4a6a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.12s;
+            color: #cfdfff;
+        }
+        .copy-chip:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .copy-chip:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        /* Unique colors for quick buttons */
+        .chip-number { border-color: #f59e0b; color: #fcd34d; }
+        .chip-name { border-color: #10b981; color: #6ee7b7; }
+        .chip-email { border-color: #ef4444; color: #fca5a5; }
+
+        /* Number Boxes Scroll Section */
+        .scroll-section {
+            margin-bottom: 24px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .section-header h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f59e0b;
+        }
+        .add-number-btn {
+            background: #1f2b44;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffd966;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .horizontal-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding-bottom: 12px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            gap: 14px;
+        }
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 5px;
+        }
+        .horizontal-scroll::-webkit-scrollbar-track {
+            background: #1a1f2e;
+            border-radius: 10px;
+        }
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 10px;
+        }
+        .number-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 1.2rem;
+            border: 1px solid #f59e0b40;
+            min-width: 280px;
+            width: 280px;
+            display: inline-block;
+            white-space: normal;
+            vertical-align: top;
+            backdrop-filter: blur(4px);
+        }
+        .number-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #f59e0b30;
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+        .number-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .number-badge {
+            background: #f59e0b20;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-family: monospace;
+        }
+        .delete-number {
+            background: none;
+            border: none;
+            color: #ff8a8a;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        .delete-number:hover { background: #ff444420; }
+        .number-textarea {
+            width: calc(100% - 20px);
+            margin: 12px 10px 0 10px;
+            background: #01020ed9;
+            border: 1px solid #f59e0b50;
+            color: #f0f4ff;
+            padding: 10px 12px;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .number-textarea:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .number-textarea:disabled {
+            opacity: 0.6;
+        }
+        .number-actions {
+            display: flex;
+            gap: 8px;
+            margin: 10px 10px 14px 10px;
+        }
+        .num-mini {
+            flex: 1;
+            background: #191f2d;
+            border: none;
+            padding: 6px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #ffd699;
+        }
+        .num-copy { background: #2a3a5a; color: #ffcd85; }
+        .num-clear { background: #3a1e2a; color: #ffaeae; }
+        .num-upload { background: #1a3a44; color: #a1d6ff; }
+
+        /* Name and Email Rows */
+        .rows-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 10px;
+        }
+        .data-card {
+            background: rgba(12, 17, 27, 0.7);
+            border-radius: 1.3rem;
+            border: 1px solid #1f2a3e;
+            overflow: hidden;
+        }
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #1e293b;
+        }
+        .title-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #2dd4bf;
+            box-shadow: 0 0 5px #2dd4bf;
+        }
+        .status-dot.locked { background: #f97316; box-shadow: 0 0 6px #f97316; }
+        .counter-stone {
+            background: #03061799;
+            padding: 3px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        .data-textarea {
+            width: calc(100% - 28px);
+            margin: 10px 14px 0 14px;
+            background: #01020ed9;
+            border: 1px solid #2a3655;
+            color: #f0f4ff;
+            padding: 10px 12px;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .data-textarea:focus { outline: none; border-color: #4c9aff; }
+        .data-textarea:disabled { opacity: 0.7; }
+        .action-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 14px 14px 14px;
+            flex-wrap: wrap;
+        }
+        .mini-action {
+            background: #191f2d;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: #b9ceff;
+        }
+        .mini-copy { background: #1f2b44; }
+        .mini-clear { background: #2e1f2a; color: #ffaeae; }
+        .mini-upload { background: #192f3c; }
+        .mini-action:disabled { opacity: 0.5; cursor: not-allowed; }
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.65rem;
+            color: #6b7b9e;
+            border-top: 1px solid #1e2a44;
+            padding-top: 18px;
+        }
+        @media (max-width: 550px) {
+            .app-container { padding: 16px; }
+            .number-card { min-width: 260px; width: 260px; }
+            .quick-flex { flex-direction: column; }
+            .copy-chip { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="brand">
+        <h1><i class="fas fa-copy"></i> EASY COPY TOOLS</h1>
+        <div class="badge-line"><i class="fas fa-shield-alt"></i> encrypted vault · serial system</div>
+    </div>
+
+    <!-- Lock Panel Top -->
+    <div class="lock-bar">
+        <button id="lockBtn" class="btn-lock"><i class="fas fa-lock"></i> LOCK & CAPTURE</button>
+        <button id="unlockBtn" class="btn-unlock" style="display: none;"><i class="fas fa-unlock-alt"></i> UNLOCK & ADD NEW</button>
+    </div>
+
+    <!-- Quick Copy Buttons Section (like old code) -->
+    <div class="quick-panel">
+        <div class="quick-title"><i class="fas fa-bolt"></i> instant serial copy</div>
+        <div class="quick-flex">
+            <button id="quickNumber" class="copy-chip chip-number" disabled><i class="fas fa-hashtag"></i> Number</button>
+            <button id="quickName" class="copy-chip chip-name" disabled><i class="fas fa-signature"></i> Name</button>
+            <button id="quickEmail" class="copy-chip chip-email" disabled><i class="fas fa-envelope"></i> Email</button>
+        </div>
+    </div>
+
+    <!-- Number Boxes with Horizontal Scroll -->
+    <div class="scroll-section">
+        <div class="section-header">
+            <h3><i class="fas fa-hashtag"></i> Number Vaults <span style="font-size:0.65rem;">(← scroll sideways →)</span></h3>
+            <button id="addNumberBox" class="add-number-btn"><i class="fas fa-plus-circle"></i> Add Box</button>
+        </div>
+        <div id="numberScrollContainer" class="horizontal-scroll"></div>
+    </div>
+
+    <!-- Name and Email Rows -->
+    <div class="rows-stack" id="rowsContainer"></div>
+
+    <div class="footer-note">
+        <i class="fas fa-arrows-alt-h"></i> scroll number boxes · lock commits all pending data · copy pulls first item (FIFO)
+    </div>
+</div>
+<script>
+    (function() {
+        const STORAGE_KEY = "easycopy_final_v4";
+        
+        let numberBoxes = [];
+        let nextBoxId = 1;
+        
+        let nameOcean = [];
+        let nameSnapshot = "";
+        let emailOcean = [];
+        let emailSnapshot = "";
+        
+        let isLocked = false;
+        let saveTimer = null;
+        
+        let lockBtn, unlockBtn, quickNumber, quickName, quickEmail, addNumberBtn, scrollContainer, rowsContainer;
+        
+        function parseToArray(raw) {
+            return raw.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
+        }
+        
+        async function copyToClipboard(text) {
+            try { await navigator.clipboard.writeText(text); }
+            catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+        }
+        
+        function commitAllToOceans() {
+            if (isLocked) return false;
+            let changed = false;
+            
+            for (let i = 0; i < numberBoxes.length; i++) {
+                const box = numberBoxes[i];
+                const textarea = document.getElementById(`num_text_${box.id}`);
+                if (!textarea) continue;
+                const currentVal = textarea.value;
+                if (currentVal !== box.snapshot) {
+                    const newEntries = parseToArray(currentVal);
+                    if (newEntries.length > 0) {
+                        box.ocean.push(...newEntries);
+                        changed = true;
+                    }
+                    box.snapshot = currentVal;
+                    textarea.value = "";
+                } else {
+                    textarea.value = "";
+                }
+            }
+            
+            const nameTextarea = document.getElementById(`input_name`);
+            if (nameTextarea) {
+                const currentName = nameTextarea.value;
+                if (currentName !== nameSnapshot) {
+                    const newNames = parseToArray(currentName);
+                    if (newNames.length > 0) {
+                        nameOcean.push(...newNames);
+                        changed = true;
+                    }
+                    nameSnapshot = currentName;
+                    nameTextarea.value = "";
+                } else {
+                    nameTextarea.value = "";
+                }
+            }
+            
+            const emailTextarea = document.getElementById(`input_email`);
+            if (emailTextarea) {
+                const currentEmail = emailTextarea.value;
+                if (currentEmail !== emailSnapshot) {
+                    const newEmails = parseToArray(currentEmail);
+                    if (newEmails.length > 0) {
+                        emailOcean.push(...newEmails);
+                        changed = true;
+                    }
+                    emailSnapshot = currentEmail;
+                    emailTextarea.value = "";
+                } else {
+                    emailTextarea.value = "";
+                }
+            }
+            
+            if (changed) {
+                refreshAllUI();
+                persistToLocal();
+            }
+            return changed;
+        }
+        
+        async function copyFromNumberBox(boxIndex) {
+            if (!isLocked) return;
+            const box = numberBoxes[boxIndex];
+            if (!box.ocean.length) return;
+            const value = box.ocean.shift();
+            await copyToClipboard(value);
+            const copyBtn = document.getElementById(`num_copy_${box.id}`);
+            if (copyBtn) {
+                const original = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => { if(copyBtn) copyBtn.innerHTML = original; }, 500);
+            }
+            refreshAllUI();
+            persistToLocal();
+        }
+        
+        function clearNumberBox(boxIndex) {
+            if (isLocked) return;
+            const box = numberBoxes[boxIndex];
+            box.ocean = [];
+            const textarea = document.getElementById(`num_text_${box.id}`);
+            if (textarea) textarea.value = "";
+            box.snapshot = "";
+            refreshAllUI();
+            persistToLocal();
+        }
+        
+        function uploadToNumberBox(boxIndex) {
+            if (isLocked) return;
+            const box = numberBoxes[boxIndex];
+            document.getElementById(`num_file_${box.id}`).click();
+        }
+        
+        function processNumberFileUpload(boxIndex, file) {
+            if (!file) return;
+            if (file.size > 10*1024*1024) return;
+            const box = numberBoxes[boxIndex];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let content = e.target.result;
+                const fname = file.name.toLowerCase();
+                try {
+                    if (fname.endsWith('.json')) {
+                        const parsed = JSON.parse(content);
+                        if (Array.isArray(parsed)) content = parsed.join('\n');
+                        else if (typeof parsed === 'object') content = Object.values(parsed).join('\n');
+                    } else if (fname.endsWith('.csv')) {
+                        const lines = content.split(/\r?\n/);
+                        const firstCols = lines.map(l => l.split(',')[0]?.trim()).filter(v => v);
+                        content = firstCols.join('\n');
+                    }
+                    const items = parseToArray(content);
+                    if (items.length) {
+                        const textarea = document.getElementById(`num_text_${box.id}`);
+                        if (textarea) {
+                            let existing = textarea.value;
+                            if (existing.trim()) existing += "\n";
+                            textarea.value = existing + items.join("\n");
+                        }
+                    }
+                } catch(err) {}
+                document.getElementById(`num_file_${box.id}`).value = "";
+            };
+            reader.readAsText(file);
+        }
+        
+        function addNewNumberBox() {
+            if (isLocked) return;
+            const newId = nextBoxId++;
+            numberBoxes.push({
+                id: newId,
+                ocean: [],
+                snapshot: "",
+            });
+            renderNumberBoxes();
+            persistToLocal();
+            setTimeout(() => {
+                if (scrollContainer) scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+            }, 50);
+        }
+        
+        function deleteNumberBox(boxIndex) {
+            if (isLocked) return;
+            numberBoxes.splice(boxIndex, 1);
+            renderNumberBoxes();
+            persistToLocal();
+        }
+        
+        function renderNumberBoxes() {
+            if (!scrollContainer) return;
+            scrollContainer.innerHTML = '';
+            for (let i = 0; i < numberBoxes.length; i++) {
+                const box = numberBoxes[i];
+                const count = box.ocean.length;
+                const card = document.createElement('div');
+                card.className = 'number-card';
+                card.innerHTML = `
+                    <div class="number-card-header">
+                        <div class="number-title">
+                            <i class="fas fa-hashtag" style="color:#f59e0b"></i>
+                            <span>Box ${i+1}</span>
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <span class="number-badge"><i class="fas fa-database"></i> ${count}</span>
+                            <button class="delete-number" data-idx="${i}" ${isLocked ? 'disabled' : ''}><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <textarea id="num_text_${box.id}" class="number-textarea" placeholder="Enter numbers (one per line)..." ${isLocked ? 'disabled' : ''}></textarea>
+                    <div class="number-actions">
+                        <button id="num_copy_${box.id}" class="num-mini num-copy" ${!isLocked || count===0 ? 'disabled' : ''}><i class="fas fa-copy"></i> Copy</button>
+                        <button id="num_clear_${box.id}" class="num-mini num-clear" ${isLocked ? 'disabled' : ''}><i class="fas fa-eraser"></i> Clear</button>
+                        <button id="num_upload_${box.id}" class="num-mini num-upload" ${isLocked ? 'disabled' : ''}><i class="fas fa-upload"></i> Import</button>
+                        <input type="file" id="num_file_${box.id}" style="display:none" accept=".txt,.csv,.json">
+                    </div>
+                `;
+                scrollContainer.appendChild(card);
+                
+                const deleteBtn = card.querySelector('.delete-number');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(deleteBtn.getAttribute('data-idx'));
+                    deleteNumberBox(idx);
+                });
+                
+                document.getElementById(`num_copy_${box.id}`).addEventListener('click', () => copyFromNumberBox(i));
+                document.getElementById(`num_clear_${box.id}`).addEventListener('click', () => clearNumberBox(i));
+                document.getElementById(`num_upload_${box.id}`).addEventListener('click', () => uploadToNumberBox(i));
+                document.getElementById(`num_file_${box.id}`).addEventListener('change', (e) => {
+                    if (e.target.files[0]) processNumberFileUpload(i, e.target.files[0]);
+                });
+            }
+        }
+                async function copyFromName() {
+            if (!isLocked || nameOcean.length === 0) return;
+            const val = nameOcean.shift();
+            await copyToClipboard(val);
+            refreshAllUI();
+            persistToLocal();
+        }
+        
+        async function copyFromEmail() {
+            if (!isLocked || emailOcean.length === 0) return;
+            const val = emailOcean.shift();
+            await copyToClipboard(val);
+            refreshAllUI();
+            persistToLocal();
+        }
+        
+        function clearName() { if (!isLocked) { nameOcean = []; document.getElementById('input_name').value = ""; nameSnapshot = ""; refreshAllUI(); persistToLocal(); } }
+        function clearEmail() { if (!isLocked) { emailOcean = []; document.getElementById('input_email').value = ""; emailSnapshot = ""; refreshAllUI(); persistToLocal(); } }
+        function uploadName() { if (!isLocked) document.getElementById('file_input_name').click(); }
+        function uploadEmail() { if (!isLocked) document.getElementById('file_input_email').click(); }
+        
+        function processStaticFile(file, textareaId) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                let content = e.target.result;
+                const fname = file.name.toLowerCase();
+                try {
+                    if (fname.endsWith('.json')) {
+                        const parsed = JSON.parse(content);
+                        if (Array.isArray(parsed)) content = parsed.join('\n');
+                        else if (typeof parsed === 'object') content = Object.values(parsed).join('\n');
+                    } else if (fname.endsWith('.csv')) {
+                        const lines = content.split(/\r?\n/);
+                        const firstCols = lines.map(l => l.split(',')[0]?.trim()).filter(v => v);
+                        content = firstCols.join('\n');
+                    }
+                    const items = parseToArray(content);
+                    if (items.length) {
+                        const ta = document.getElementById(textareaId);
+                        if (ta) {
+                            let existing = ta.value;
+                            if (existing.trim()) existing += "\n";
+                            ta.value = existing + items.join("\n");
+                        }
+                    }
+                } catch(err) {}
+                document.getElementById(`file_${textareaId}`).value = "";
+            };
+            reader.readAsText(file);
+        }
+        
+        function lockSystem() {
+            if (isLocked) return;
+            commitAllToOceans();
+            isLocked = true;
+            updateGlobalUI();
+            persistToLocal();
+        }
+        
+        function unlockSystem() {
+            if (!isLocked) return;
+            isLocked = false;
+            for (let box of numberBoxes) {
+                const ta = document.getElementById(`num_text_${box.id}`);
+                if (ta) ta.value = "";
+                box.snapshot = "";
+            }
+            const nameTa = document.getElementById('input_name');
+            if (nameTa) nameTa.value = "";
+            nameSnapshot = "";
+            const emailTa = document.getElementById('input_email');
+            if (emailTa) emailTa.value = "";
+            emailSnapshot = "";
+            updateGlobalUI();
+            persistToLocal();
+        }
+        
+        function refreshAllUI() {
+            // Update number boxes UI
+            for (let i = 0; i < numberBoxes.length; i++) {
+                const box = numberBoxes[i];
+                const card = document.querySelector(`.number-card:has(#num_text_${box.id})`);
+                if (card) {
+                    const badge = card.querySelector('.number-badge');
+                    if (badge) badge.innerHTML = `<i class="fas fa-database"></i> ${box.ocean.length}`;
+                }
+                const copyBtn = document.getElementById(`num_copy_${box.id}`);
+                if (copyBtn) copyBtn.disabled = (!isLocked || box.ocean.length === 0);
+                const clearBtn = document.getElementById(`num_clear_${box.id}`);
+                if (clearBtn) clearBtn.disabled = isLocked;
+                const uploadBtn = document.getElementById(`num_upload_${box.id}`);
+                if (uploadBtn) uploadBtn.disabled = isLocked;
+                const textarea = document.getElementById(`num_text_${box.id}`);
+                if (textarea) textarea.disabled = isLocked;
+            }
+            
+            // Update Name & Email UI
+            document.getElementById('counter_name').innerText = nameOcean.length;
+            document.getElementById('counter_email').innerText = emailOcean.length;
+            document.getElementById('copy_name_btn').disabled = (!isLocked || nameOcean.length === 0);
+            document.getElementById('copy_email_btn').disabled = (!isLocked || emailOcean.length === 0);
+            document.getElementById('clear_name_btn').disabled = isLocked;
+            document.getElementById('clear_email_btn').disabled = isLocked;
+            document.getElementById('upload_name_btn').disabled = isLocked;
+            document.getElementById('upload_email_btn').disabled = isLocked;
+            document.getElementById('input_name').disabled = isLocked;
+            document.getElementById('input_email').disabled = isLocked;
+            
+            // Update Quick Copy Buttons
+            if (quickNumber) quickNumber.disabled = (!isLocked || getTotalNumberCount() === 0);
+            if (quickName) quickName.disabled = (!isLocked || nameOcean.length === 0);
+            if (quickEmail) quickEmail.disabled = (!isLocked || emailOcean.length === 0);
+            
+            // Update status dots
+            const ledName = document.getElementById('led_name');
+            const ledEmail = document.getElementById('led_email');
+            if (ledName) { if(isLocked) ledName.classList.add('locked'); else ledName.classList.remove('locked'); }
+            if (ledEmail) { if(isLocked) ledEmail.classList.add('locked'); else ledEmail.classList.remove('locked'); }
+        }
+        
+        function getTotalNumberCount() {
+            let total = 0;
+            for (let box of numberBoxes) {
+                total += box.ocean.length;
+            }
+            return total;
+        }
+        
+        async function copyFromAnyNumberBox() {
+            if (!isLocked) return;
+            for (let i = 0; i < numberBoxes.length; i++) {
+                if (numberBoxes[i].ocean.length > 0) {
+                    await copyFromNumberBox(i);
+                    return;
+                }
+            }
+        }
+        
+        function updateGlobalUI() {
+            if (lockBtn && unlockBtn) {
+                lockBtn.style.display = isLocked ? 'none' : 'inline-flex';
+                unlockBtn.style.display = isLocked ? 'inline-flex' : 'none';
+            }
+            refreshAllUI();
+        }
+        
+        function persistToLocal() {
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                const state = {
+                    isLocked,
+                    numberBoxes: numberBoxes.map(b => ({ id: b.id, ocean: b.ocean, snapshot: b.snapshot })),
+                    nextBoxId,
+                    nameOcean, nameSnapshot,
+                    emailOcean, emailSnapshot,
+                    version: "final_v4"
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            }, 200);
+        }
+        
+        function loadFromLocal() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                try {
+                    const data = JSON.parse(raw);
+                    if (data.version === "final_v4") {
+                        isLocked = data.isLocked || false;
+                        numberBoxes = data.numberBoxes || [];
+                        nextBoxId = data.nextBoxId || 1;
+                        nameOcean = data.nameOcean || [];
+                        nameSnapshot = data.nameSnapshot || "";
+                        emailOcean = data.emailOcean || [];
+                        emailSnapshot = data.emailSnapshot || "";
+                    } else { initDefault(); }
+                } catch(e) { initDefault(); }
+            } else { initDefault(); }
+            renderNumberBoxes();
+            for (let box of numberBoxes) {
+                const ta = document.getElementById(`num_text_${box.id}`);
+                if (ta) { ta.value = ""; ta.disabled = isLocked; }
+            }
+            const nameTa = document.getElementById('input_name');
+            if (nameTa) { nameTa.value = ""; nameTa.disabled = isLocked; }
+            const emailTa = document.getElementById('input_email');
+            if (emailTa) { emailTa.value = ""; emailTa.disabled = isLocked; }
+            updateGlobalUI();
+        }
+        
+        function initDefault() {
+            isLocked = false;
+            numberBoxes = [{ id: 1, ocean: [], snapshot: "" }];
+            nextBoxId = 2;
+            nameOcean = []; nameSnapshot = "";
+            emailOcean = []; emailSnapshot = "";
+        }
+        
+        function renderStaticRows() {
+            rowsContainer = document.getElementById('rowsContainer');
+            rowsContainer.innerHTML = `
+                <div class="data-card">
+                    <div class="card-head"><div class="title-badge"><span class="status-dot" id="led_name"></span><i class="fas fa-signature"></i> <strong>Name</strong></div><div class="counter-stone"><i class="fas fa-layer-group"></i> <span id="counter_name">0</span> items</div></div>
+                    <textarea id="input_name" class="data-textarea" placeholder="Enter names (one per line)"></textarea>
+                    <div class="action-group"><button id="copy_name_btn" class="mini-action mini-copy"><i class="fas fa-copy"></i> Copy Next</button><button id="clear_name_btn" class="mini-action mini-clear"><i class="fas fa-trash"></i> Clear</button><button id="upload_name_btn" class="mini-action mini-upload"><i class="fas fa-upload"></i> Import</button><input type="file" id="file_input_name" style="display:none"></div>
+                </div>
+                <div class="data-card">
+                    <div class="card-head"><div class="title-badge"><span class="status-dot" id="led_email"></span><i class="fas fa-envelope"></i> <strong>Email</strong></div><div class="counter-stone"><i class="fas fa-layer-group"></i> <span id="counter_email">0</span> items</div></div>
+                    <textarea id="input_email" class="data-textarea" placeholder="Enter emails (one per line)"></textarea>
+                    <div class="action-group"><button id="copy_email_btn" class="mini-action mini-copy"><i class="fas fa-copy"></i> Copy Next</button><button id="clear_email_btn" class="mini-action mini-clear"><i class="fas fa-trash"></i> Clear</button><button id="upload_email_btn" class="mini-action mini-upload"><i class="fas fa-upload"></i> Import</button><input type="file" id="file_input_email" style="display:none"></div>
+                </div>
+            `;
+            document.getElementById('copy_name_btn').addEventListener('click', copyFromName);
+            document.getElementById('clear_name_btn').addEventListener('click', clearName);
+            document.getElementById('upload_name_btn').addEventListener('click', () => document.getElementById('file_input_name').click());
+            document.getElementById('file_input_name').addEventListener('change', e => { if(e.target.files[0]) processStaticFile(e.target.files[0], 'input_name'); });
+            document.getElementById('copy_email_btn').addEventListener('click', copyFromEmail);
+            document.getElementById('clear_email_btn').addEventListener('click', clearEmail);
+            document.getElementById('upload_email_btn').addEventListener('click', () => document.getElementById('file_input_email').click());
+            document.getElementById('file_input_email').addEventListener('change', e => { if(e.target.files[0]) processStaticFile(e.target.files[0], 'input_email'); });
+        }
+        
+        scrollContainer = document.getElementById('numberScrollContainer');
+        addNumberBtn = document.getElementById('addNumberBox');
+        lockBtn = document.getElementById('lockBtn');
+        unlockBtn = document.getElementById('unlockBtn');
+        quickNumber = document.getElementById('quickNumber');
+        quickName = document.getElementById('quickName');
+        quickEmail = document.getElementById('quickEmail');
+        
+        renderStaticRows();
+        loadFromLocal();
+        
+        addNumberBtn.addEventListener('click', addNewNumberBox);
+        lockBtn.addEventListener('click', lockSystem);
+        unlockBtn.addEventListener('click', unlockSystem);
+        quickNumber.addEventListener('click', copyFromAnyNumberBox);
+        quickName.addEventListener('click', copyFromName);
+        quickEmail.addEventListener('click', copyFromEmail);
+    })();
+</script>
+</body>
+</html>
