@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>EASY COPY TOOLS · Serial Copy System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0c15 0%, #0d111a 100%);
+            font-family: 'Inter', sans-serif;
+            color: #edf2ff;
+            min-height: 100vh;
+            padding: 20px 16px 40px;
+        }
+
+        .app-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(10, 14, 23, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 24px 20px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a0c0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            margin-top: 8px;
+            color: #8e9bbe;
+        }
+
+        .lock-bar {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-lock,
+        .btn-unlock {
+            border: 1px solid #2a3348;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            background: #11161f;
+            color: #e0edff;
+        }
+
+        .btn-lock {
+            border-color: #4c9aff;
+        }
+
+        .btn-unlock {
+            border-color: #5f7fbf;
+        }
+
+        .btn-lock:hover,
+        .btn-unlock:hover {
+            transform: translateY(-2px);
+            background: #1a2538;
+        }
+
+        .quick-panel {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 1.5rem;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(76, 154, 255, 0.15);
+        }
+
+        .quick-title {
+            font-weight: 600;
+            font-size: 0.75rem;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            color: #a5bbeb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .copy-chip {
+            background: #111927dd;
+            border: 1px solid #3c4a6a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.12s;
+            color: #cfdfff;
+        }
+
+        .copy-chip:disabled,
+        .mini-action:disabled,
+        .num-mini:disabled,
+        .delete-number:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .copy-chip:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+
+        .chip-number {
+            border-color: #f59e0b;
+            color: #fcd34d;
+        }
+
+        .chip-name {
+            border-color: #10b981;
+            color: #6ee7b7;
+        }
+
+        .chip-email {
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .scroll-section {
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .section-header h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f59e0b;
+        }
+
+        .add-number-btn {
+            background: #1f2b44;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #ffd966;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .horizontal-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding-bottom: 12px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            gap: 14px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 10px;
+        }
+
+        .number-card {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 1.2rem;
+            border: 1px solid #f59e0b40;
+            min-width: 280px;
+            width: 280px;
+            display: inline-block;
+            white-space: normal;
+            vertical-align: top;
+            backdrop-filter: blur(4px);
+        }
+
+        .number-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #f59e0b30;
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+
+        .number-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .number-badge {
+            background: #f59e0b20;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-family: monospace;
+        }
+
+        .delete-number {
+            background: none;
+            border: none;
+            color: #ff8a8a;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .delete-number:hover:not(:disabled) {
+            background: #ff444420;
+        }
+
+        .number-textarea,
+        .data-textarea {
+            width: calc(100% - 20px);
+            margin: 12px 10px 0;
+            background: #01020ed9;
+            border: 1px solid #2a3655;
+            color: #f0f4ff;
+            padding: 10px 12px;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 0.82rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .number-textarea {
+            border-color: #f59e0b50;
+        }
+
+        .number-textarea:focus,
+        .data-textarea:focus {
+            outline: none;
+        }
+
+        .number-textarea:focus {
+            border-color: #f59e0b;
+        }
+
+        .data-textarea:focus {
+            border-color: #4c9aff;
+        }
+
+        .number-actions,
+        .action-group {
+            display: flex;
+            gap: 8px;
+            margin: 10px;
+            flex-wrap: wrap;
+        }
+
+        .num-mini,
+        .mini-action {
+            flex: 1;
+            background: #191f2d;
+            border: none;
+            padding: 7px;
+            border-radius: 30px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #b9ceff;
+        }
+
+        .num-copy,
+        .mini-copy {
+            background: #1f2b44;
+        }
+
+        .num-clear,
+        .mini-clear {
+            background: #3a1e2a;
+            color: #ffaeae;
+        }
+
+        .num-upload,
+        .mini-upload {
+            background: #1a3a44;
+            color: #a1d6ff;
+        }
+
+        .rows-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .data-card {
+            background: rgba(12, 17, 27, 0.7);
+            border-radius: 1.3rem;
+            border: 1px solid #1f2a3e;
+            overflow: hidden;
+        }
+
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .title-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #2dd4bf;
+            box-shadow: 0 0 5px #2dd4bf;
+        }
+
+        .status-dot.locked {
+            background: #f97316;
+            box-shadow: 0 0 6px #f97316;
+        }
+
+        .counter-stone {
+            background: #03061799;
+            padding: 3px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 0.65rem;
+            color: #6b7b9e;
+            border-top: 1px solid #1e2a44;
+            padding-top: 18px;
+        }
+
+        @media (max-width: 550px) {
+            .app-container {
+                padding: 16px;
+            }
+
+            .number-card {
+                min-width: 260px;
+                width: 260px;
+            }
+
+            .quick-flex {
+                flex-direction: column;
+            }
+
+            .copy-chip {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="brand">
+            <h1><i class="fas fa-copy"></i> EASY COPY TOOLS</h1>
+            <div class="badge-line">
+                <i class="fas fa-shield-alt"></i> encrypted vault · serial system
+            </div>
+        </div>
+
+        <div class="lock-bar">
+            <button id="lockBtn" class="btn-lock">
+                <i class="fas fa-lock"></i> LOCK & CAPTURE
+            </button>
+
+            <button id="unlockBtn" class="btn-unlock" style="display:none;">
+                <i class="fas fa-unlock-alt"></i> UNLOCK & ADD NEW
+            </button>
+        </div>
+
+        <div class="quick-panel">
+            <div class="quick-title">
+                <i class="fas fa-bolt"></i> instant serial copy
+            </div>
+
+            <div class="quick-flex">
+                <button id="quickNumber" class="copy-chip chip-number" disabled>
+                    <i class="fas fa-hashtag"></i> Number
+                </button>
+
+                <button id="quickName" class="copy-chip chip-name" disabled>
+                    <i class="fas fa-signature"></i> Name
+                </button>
+
+                <button id="quickEmail" class="copy-chip chip-email" disabled>
+                    <i class="fas fa-envelope"></i> Email
+                </button>
+            </div>
+        </div>
+
+        <div class="scroll-section">
+            <div class="section-header">
+                <h3>
+                    <i class="fas fa-hashtag"></i> Number Vaults
+                    <span style="font-size:0.65rem;">(← scroll sideways →)</span>
+                </h3>
+
+                <button id="addNumberBox" class="add-number-btn">
+                    <i class="fas fa-plus-circle"></i> Add Box
+                </button>
+            </div>
+
+            <div id="numberScrollContainer" class="horizontal-scroll"></div>
+        </div>
+
+        <div class="rows-stack" id="rowsContainer"></div>
+
+        <div class="footer-note">
+            <i class="fas fa-arrows-alt-h"></i>
+            scroll number boxes · lock commits all pending data · copy pulls first item (FIFO)
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            'use strict';
+
+            const STORAGE_KEY = 'easycopy_final_v5';
+
+            let numberBoxes = [];
+            let nextBoxId = 1;
+
+            let nameOcean = [];
+            let emailOcean = [];
+
+            let isLocked = false;
+            let saveTimer = null;
+
+            const scrollContainer = document.getElementById('numberScrollContainer');
+            const rowsContainer = document.getElementById('rowsContainer');
+
+            const lockBtn = document.getElementById('lockBtn');
+            const unlockBtn = document.getElementById('unlockBtn');
+
+            const quickNumber = document.getElementById('quickNumber');
+            const quickName = document.getElementById('quickName');
+            const quickEmail = document.getElementById('quickEmail');
+
+            const addNumberBtn = document.getElementById('addNumberBox');
+
+            function parseToArray(raw) {
+                return raw
+                    .split(/\r?\n/)
+                    .map(item => item.trim())
+                    .filter(Boolean);
+            }
+
+            async function copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch (error) {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+            }
+
+            function persistToLocal() {
+                clearTimeout(saveTimer);
+
+                saveTimer = setTimeout(() => {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                        isLocked,
+                        nextBoxId,
+                        numberBoxes,
+                        nameOcean,
+                        emailOcean
+                    }));
+                }, 150);
+            }
+
+            function getTotalNumberCount() {
+                return numberBoxes.reduce((sum, box) => sum + box.ocean.length, 0);
+            }
+
+            function updateTopButtons() {
+                quickNumber.disabled = !isLocked || getTotalNumberCount() === 0;
+                quickName.disabled = !isLocked || nameOcean.length === 0;
+                quickEmail.disabled = !isLocked || emailOcean.length === 0;
+            }
+
+            function renderStaticRows() {
+                rowsContainer.innerHTML = `
+                    <div class="data-card">
+                        <div class="card-head">
+                            <div class="title-badge">
+                                <span class="status-dot" id="led_name"></span>
+                                <i class="fas fa-signature"></i>
+                                <strong>Name</strong>
+                            </div>
+
+                            <div class="counter-stone">
+                                <span id="counter_name">0</span> items
+                            </div>
+                        </div>
+
+                        <textarea id="input_name" class="data-textarea" placeholder="Enter names (one per line)"></textarea>
+
+                        <div class="action-group">
+                            <button id="copy_name_btn" class="mini-action mini-copy">Copy Next</button>
+                            <button id="clear_name_btn" class="mini-action mini-clear">Clear</button>
+                            <button id="upload_name_btn" class="mini-action mini-upload">Import</button>
+
+                            <input type="file" id="file_input_name" hidden accept=".txt,.csv,.json" />
+                        </div>
+                    </div>
+
+                    <div class="data-card">
+                        <div class="card-head">
+                            <div class="title-badge">
+                                <span class="status-dot" id="led_email"></span>
+                                <i class="fas fa-envelope"></i>
+                                <strong>Email</strong>
+                            </div>
+
+                            <div class="counter-stone">
+                                <span id="counter_email">0</span> items
+                            </div>
+                        </div>
+
+                        <textarea id="input_email" class="data-textarea" placeholder="Enter emails (one per line)"></textarea>
+
+                        <div class="action-group">
+                            <button id="copy_email_btn" class="mini-action mini-copy">Copy Next</button>
+                            <button id="clear_email_btn" class="mini-action mini-clear">Clear</button>
+                            <button id="upload_email_btn" class="mini-action mini-upload">Import</button>
+
+                            <input type="file" id="file_input_email" hidden accept=".txt,.csv,.json" />
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderNumberBoxes() {
+                scrollContainer.innerHTML = '';
+
+                numberBoxes.forEach((box, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'number-card';
+
+                    card.innerHTML = `
+                        <div class="number-card-header">
+                            <div class="number-title">
+                                <i class="fas fa-hashtag" style="color:#f59e0b"></i>
+                                <span>Box ${index + 1}</span>
+                            </div>
+
+                            <div style="display:flex;gap:6px;align-items:center;">
+                                <span class="number-badge">${box.ocean.length}</span>
+
+                                <button class="delete-number" ${isLocked ? 'disabled' : ''}>
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <textarea class="number-textarea" placeholder="Enter numbers (one per line)..." ${isLocked ? 'disabled' : ''}></textarea>
+
+                        <div class="number-actions">
+                            <button class="num-mini num-copy" ${(!isLocked || box.ocean.length === 0) ? 'disabled' : ''}>Copy</button>
+                            <button class="num-mini num-clear" ${isLocked ? 'disabled' : ''}>Clear</button>
+                            <button class="num-mini num-upload" ${isLocked ? 'disabled' : ''}>Import</button>
+
+                            <input type="file" hidden accept=".txt,.csv,.json" />
+                        </div>
+                    `;
+
+                    const textarea = card.querySelector('.number-textarea');
+                    const copyBtn = card.querySelector('.num-copy');
+                    const clearBtn = card.querySelector('.num-clear');
+                    const uploadBtn = card.querySelector('.num-upload');
+                    const fileInput = card.querySelector('input[type="file"]');
+                    const deleteBtn = card.querySelector('.delete-number');
+                    const badge = card.querySelector('.number-badge');
+
+                    copyBtn.addEventListener('click', async () => {
+                        if (!box.ocean.length || !isLocked) return;
+
+                        const value = box.ocean.shift();
+                        await copyToClipboard(value);
+
+                        badge.textContent = box.ocean.length;
+
+                        renderNumberBoxes();
+                        persistToLocal();
+                        updateTopButtons();
+                    });
+
+                    clearBtn.addEventListener('click', () => {
+                        if (isLocked) return;
+
+                        box.ocean = [];
+                        textarea.value = '';
+
+                        renderNumberBoxes();
+                        persistToLocal();
+                    });
+
+                    uploadBtn.addEventListener('click', () => fileInput.click());
+
+                    fileInput.addEventListener('change', async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        const content = await file.text();
+                        textarea.value += (textarea.value.trim() ? '\n' : '') + content;
+                    });
+
+                    deleteBtn.addEventListener('click', () => {
+                        if (isLocked) return;
+
+                        numberBoxes.splice(index, 1);
+
+                        if (numberBoxes.length === 0) {
+                            numberBoxes.push({
+                                id: nextBoxId++,
+                                ocean: []
+                            });
+                        }
+
+                        renderNumberBoxes();
+                        persistToLocal();
+                    });
+
+                    scrollContainer.appendChild(card);
+                });
+
+                updateTopButtons();
+            }
+
+            function commitAllData() {
+                if (isLocked) return;
+
+                document.querySelectorAll('.number-card').forEach((card, index) => {
+                    const textarea = card.querySelector('.number-textarea');
+                    const items = parseToArray(textarea.value);
+
+                    if (items.length) {
+                        numberBoxes[index].ocean.push(...items);
+                    }
+
+                    textarea.value = '';
+                });
+
+                const nameInput = document.getElementById('input_name');
+                const emailInput = document.getElementById('input_email');
+
+                nameOcean.push(...parseToArray(nameInput.value));
+                emailOcean.push(...parseToArray(emailInput.value));
+
+                nameInput.value = '';
+                emailInput.value = '';
+
+                persistToLocal();
+            }
+
+            function updateCounters() {
+                document.getElementById('counter_name').textContent = nameOcean.length;
+                document.getElementById('counter_email').textContent = emailOcean.length;
+            }
+
+            async function copyFromArray(arrayRef, counterId) {
+                if (!isLocked || arrayRef.length === 0) return;
+
+                const value = arrayRef.shift();
+
+                await copyToClipboard(value);
+
+                document.getElementById(counterId).textContent = arrayRef.length;
+
+                persistToLocal();
+                updateTopButtons();
+            }
+
+            function setupStaticActions() {
+                document.getElementById('copy_name_btn').addEventListener('click', () => {
+                    copyFromArray(nameOcean, 'counter_name');
+                });
+
+                document.getElementById('copy_email_btn').addEventListener('click', () => {
+                    copyFromArray(emailOcean, 'counter_email');
+                });
+
+                document.getElementById('clear_name_btn').addEventListener('click', () => {
+                    if (isLocked) return;
+
+                    nameOcean = [];
+                    document.getElementById('input_name').value = '';
+
+                    updateCounters();
+                    persistToLocal();
+                });
+
+                document.getElementById('clear_email_btn').addEventListener('click', () => {
+                    if (isLocked) return;
+
+                    emailOcean = [];
+                    document.getElementById('input_email').value = '';
+
+                    updateCounters();
+                    persistToLocal();
+                });
+
+                document.getElementById('upload_name_btn').addEventListener('click', () => {
+                    document.getElementById('file_input_name').click();
+                });
+
+                document.getElementById('upload_email_btn').addEventListener('click', () => {
+                    document.getElementById('file_input_email').click();
+                });
+
+                ['name', 'email'].forEach(type => {
+                    document.getElementById(`file_input_${type}`).addEventListener('change', async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        const content = await file.text();
+
+                        const textarea = document.getElementById(`input_${type}`);
+
+                        textarea.value += (textarea.value.trim() ? '\n' : '') + content;
+                    });
+                });
+            }
+
+            function lockSystem() {
+                commitAllData();
+
+                isLocked = true;
+
+                lockBtn.style.display = 'none';
+                unlockBtn.style.display = 'inline-flex';
+
+                renderNumberBoxes();
+                updateCounters();
+                updateTopButtons();
+
+                persistToLocal();
+            }
+
+            function unlockSystem() {
+                isLocked = false;
+
+                lockBtn.style.display = 'inline-flex';
+                unlockBtn.style.display = 'none';
+
+                renderNumberBoxes();
+                updateTopButtons();
+
+                persistToLocal();
+            }
+
+            function loadData() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+
+                    if (!raw) {
+                        numberBoxes = [{
+                            id: 1,
+                            ocean: []
+                        }];
+
+                        nextBoxId = 2;
+                        return;
+                    }
+
+                    const data = JSON.parse(raw);
+
+                    isLocked = data.isLocked || false;
+                    nextBoxId = data.nextBoxId || 2;
+                    numberBoxes = data.numberBoxes || [];
+                    nameOcean = data.nameOcean || [];
+                    emailOcean = data.emailOcean || [];
+
+                    if (!numberBoxes.length) {
+                        numberBoxes.push({
+                            id: 1,
+                            ocean: []
+                        });
+                    }
+                } catch (error) {
+                    numberBoxes = [{
+                        id: 1,
+                        ocean: []
+                    }];
+                }
+            }
+
+            renderStaticRows();
+            loadData();
+            renderNumberBoxes();
+            setupStaticActions();
+            updateCounters();
+
+            if (isLocked) {
+                lockBtn.style.display = 'none';
+                unlockBtn.style.display = 'inline-flex';
+            }
+
+            addNumberBtn.addEventListener('click', () => {
+                if (isLocked) return;
+
+                numberBoxes.push({
+                    id: nextBoxId++,
+                    ocean: []
+                });
+
+                renderNumberBoxes();
+                persistToLocal();
+            });
+
+            lockBtn.addEventListener('click', lockSystem);
+            unlockBtn.addEventListener('click', unlockSystem);
+
+            quickNumber.addEventListener('click', async () => {
+                for (const box of numberBoxes) {
+                    if (box.ocean.length) {
+                        const value = box.ocean.shift();
+
+                        await copyToClipboard(value);
+
+                        renderNumberBoxes();
+                        persistToLocal();
+
+                        break;
+                    }
+                }
+            });
+
+            quickName.addEventListener('click', () => {
+                copyFromArray(nameOcean, 'counter_name');
+            });
+
+            quickEmail.addEventListener('click', () => {
+                copyFromArray(emailOcean, 'counter_email');
+            });
+        })();
+    </script>
+</body>
+</html>
